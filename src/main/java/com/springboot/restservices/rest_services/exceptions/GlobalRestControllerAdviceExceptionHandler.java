@@ -15,4 +15,4 @@ public class GlobalRestControllerAdviceExceptionHandler {
 	public CustomErrorDetails userNameNotFound(UserNameNotFoundException ex) {
 		return new CustomErrorDetails(new Date(), "From @RestControllerAdvice NOT FOUND", ex.getMessage());
 	}
-}
+} 
