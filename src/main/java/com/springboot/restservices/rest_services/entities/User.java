@@ -14,8 +14,11 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
 @Entity
 @Table(name = "user")
+@JsonFilter(value="userFilter")
 public class User extends RepresentationModel<User>{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
