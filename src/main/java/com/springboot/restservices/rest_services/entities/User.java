@@ -9,34 +9,45 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
 @Entity
 @Table(name = "user")
-public class User extends RepresentationModel<User>{
+//@JsonFilter(value="userFilter") -> Used for MappingJacksonValue filtering section
+public class User extends RepresentationModel<User> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonView(Views.External.class)
 	private Long id;
-	@NotEmpty(message="Username cannot be empty.")
+	@NotEmpty(message = "Username cannot be empty.")
 	@Column(name = "USER_NAME", length = 50, nullable = false, unique = true)
+	@JsonView(Views.External.class)
 	private String userName;
-	@Size(min=2,message="First name should have atleast 2 characters")
+	@Size(min = 2, message = "First name should have atleast 2 characters")
 	@Column(name = "FIRST_NAME", length = 50, nullable = false)
+	@JsonView(Views.External.class)
 	private String firstName;
 	@Column(name = "LAST_NAME", length = 50, nullable = false)
+	@JsonView(Views.External.class)
 	private String lastName;
 	@Column(name = "EMAIl", length = 50, nullable = false)
+	@JsonView(Views.External.class)
 	private String email;
 	@Column(name = "ROLE", length = 50, nullable = false)
+	@JsonView(Views.Internal.class)
 	private String role;
 	@Column(name = "SSN", length = 50, nullable = false, unique = true)
+	@JsonView(Views.Internal.class)
 	private String ssn;
-	@OneToMany(mappedBy="user")
+	@OneToMany(mappedBy = "user")
+	@JsonView(Views.Internal.class)
 	private List<Order> orders;
-	
+
 	// No argument constructor-Required
 	// Field constructor - Optional
 	// Getters & setter - Required
