@@ -47,6 +47,8 @@ public class User extends RepresentationModel<User> {
 	@OneToMany(mappedBy = "user")
 	@JsonView(Views.Internal.class)
 	private List<Order> orders;
+	@Column(name="address")
+	private String address;
 
 	// No argument constructor-Required
 	// Field constructor - Optional
@@ -56,7 +58,9 @@ public class User extends RepresentationModel<User> {
 
 	}
 
-	public User(Long id, String userName, String firstName, String lastName, String email, String role, String ssn) {
+	public User(Long id, @NotEmpty(message = "Username cannot be empty.") String userName,
+			@Size(min = 2, message = "First name should have atleast 2 characters") String firstName, String lastName,
+			String email, String role, String ssn, List<Order> orders, String address) {
 		super();
 		this.id = id;
 		this.userName = userName;
@@ -65,6 +69,8 @@ public class User extends RepresentationModel<User> {
 		this.email = email;
 		this.role = role;
 		this.ssn = ssn;
+		this.orders = orders;
+		this.address = address;
 	}
 
 	public Long getId() {
@@ -129,6 +135,14 @@ public class User extends RepresentationModel<User> {
 
 	public void setOrders(List<Order> orders) {
 		this.orders = orders;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	@Override
