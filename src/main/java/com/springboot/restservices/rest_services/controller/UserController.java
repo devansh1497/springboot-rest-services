@@ -28,36 +28,45 @@ import com.springboot.restservices.rest_services.exceptions.UserNameNotFoundExce
 import com.springboot.restservices.rest_services.exceptions.UserNotFoundException;
 import com.springboot.restservices.rest_services.services.UserService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @Validated
 @RequestMapping("/users")
+@Api(tags = "User Manangement RESTful Services", value = "UserController", description = "Controller for User Manegement Servive")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 
 	@GetMapping
+	@ApiOperation(value = " Retrieve list of users")
 	public List<User> getAllUsers() {
 		return userService.getAllUsers();
 	}
 
 	@PostMapping
-	public ResponseEntity<Void> createUser(@Valid @RequestBody User user, UriComponentsBuilder builder) {
+	@ApiOperation(value = "Creates a new user")
+	public ResponseEntity<Void> createUser(@ApiParam("User information for a new user to be created") @Valid @RequestBody User user, UriComponentsBuilder builder) {
 		try {
 			userService.createUser(user);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setLocation(builder.path("/users/{id}").buildAndExpand(user.getId()).toUri());
-			return new ResponseEntity<Void>(headers,HttpStatus.CREATED);
-			
+			return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+
 		} catch (UserExistsException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
 
 	@GetMapping("/{id}")
-	public Optional<User> getUserById(@PathVariable("id") @Min(1) Long id) {
+	public User getUserById(@PathVariable("id") @Min(1) Long id) {
 		try {
-			return userService.getUserById(id);
+			Optional<User> userOptional = userService.getUserById(id);
+			User user = userOptional.get();
+			return user;
 		} catch (UserNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
@@ -70,7 +79,7 @@ public class UserController {
 		} catch (UserNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
-	} 
+	}
 
 	@DeleteMapping("/{id}")
 	public void deleteUserById(@PathVariable("id") Long id) {
@@ -78,9 +87,10 @@ public class UserController {
 	}
 
 	@GetMapping("/username/{userName}")
-	public User findUserByUserName(@PathVariable("userName") String userName) throws UserNameNotFoundException{
-		User user =  userService.findUserByUserName(userName);
-		if(user == null) throw new UserNameNotFoundException("Username: '" +userName+"' not found!");
+	public User findUserByUserName(@PathVariable("userName") String userName) throws UserNameNotFoundException {
+		User user = userService.findUserByUserName(userName);
+		if (user == null)
+			throw new UserNameNotFoundException("Username: '" + userName + "' not found!");
 		return user;
 	}
 }
