@@ -12,18 +12,22 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import com.fasterxml.jackson.annotation.JsonView;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "user")
+@ApiModel(description = "This model is to create a user")
 //@JsonFilter(value="userFilter") -> Used for MappingJacksonValue filtering section
-public class User extends RepresentationModel<User> {
+public class User {
+	@ApiModelProperty(notes = "Auto generated unique id", required = true, position = 1)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonView(Views.External.class)
 	private Long id;
+	@ApiModelProperty(notes = "Username should be in format flname", example = "dsingh", required = false, position = 2)
 	@NotEmpty(message = "Username cannot be empty.")
 	@Column(name = "USER_NAME", length = 50, nullable = false, unique = true)
 	@JsonView(Views.External.class)
@@ -47,7 +51,7 @@ public class User extends RepresentationModel<User> {
 	@OneToMany(mappedBy = "user")
 	@JsonView(Views.Internal.class)
 	private List<Order> orders;
-	@Column(name="address")
+	@Column(name = "address")
 	private String address;
 
 	// No argument constructor-Required
